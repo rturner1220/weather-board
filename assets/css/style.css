@@ -44,7 +44,7 @@ body {
     
    /* FORM */
 .form-input {
-    width: 30%;
+    width: 21%;
     padding: 10px;
     margin: 5px 0;
     font-size: 1.5rem;
@@ -55,7 +55,7 @@ body {
 .btn {
     font-size: 1.5rem;
     text-decoration:none;
-    width: 30%;
+    width: 21%;
     padding: 6px 5px;
     display: block;
     margin: 5px 0;
@@ -76,17 +76,18 @@ body {
   }
 
 #h3 {
-    margin-left: 32%;
-    margin-top: 5%;
+    margin-left: 28%;
+    margin-top: 12%;
+    font-size: 30px;
   }
   
 .card-body {
-    width: 900px;
-    height: 250px;
+    width: 71%;
+    height: 400px;
     display: flex;
     position: absolute;
-    top: 15%;
-    left: 32%;
+    top: 10%;
+    left: 28%;
     border: 1px solid black;
   
 }
@@ -96,7 +97,7 @@ body {
     height: 300px;
     position: absolute;
     left: 10px;
-    top: 50%;
+    top: 35%;
     border-top: 2px solid black;
   } 
 
@@ -105,8 +106,8 @@ body {
     margin: 1em;
     padding: 1em;
     border: 1px solid black;
-    width: 160px;
-    height: 200px;
+    width: 250px;
+    height: 300px;
     float: right;
     margin-right: 6px;
     margin-top: 0px;
