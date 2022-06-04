@@ -23,13 +23,15 @@ function init() {
     if (storedCities !== null) {
         cityList = storedCities;
     }
+// calls main on page load function
+    init();
 
     createCityList();
 
     if (cityList) {
         var thisCity = cityList[cityList.length - 1]
         getCurrentWeather(thisCity, id);
-        getForescast(thisCity, id);
+        getForesCast(thisCity, id);
         }
     }
 
@@ -40,7 +42,7 @@ function getCurrentWeather(thisCity, id) {
     var cityLong;
 
     $.ajax({
-        URL: weatherUrl,
+        url: weatherUrl,
         method: "GET"
     }).then(function(data) {
         $(".cityToday").append (
@@ -71,8 +73,6 @@ function getUVI(id, cityLat, cityLong) {
     })
 }
 
-// calls main on page load function
-init();
 
 // submit event that loads new data
 $("form").on("submit", function(event) {
@@ -84,3 +84,29 @@ $("form").on("submit", function(event) {
     storeCities();
     $("#searchButton").val("");
 })
+
+// get  day forescast for wlwcted city
+function getForesCast(thisCity, id) {
+    var foreCastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${thisCity}&units=imperial&appid=${id}`;
+
+    $.ajax({
+        url: foreCastURL,
+        method: "GET"
+    }).then(function(data) {
+        for (i = 0; i < data.list.length; i++) {
+            if (data.list[i].dt_txt.search("15:00:00") != -1) {
+                var forecastDate = data.list[i];
+                $(".forecast").append(`<div class="card bg-primary shadow m-4">
+                <div class="card-body">
+                <h4 class="card-title">${(new Date(1000 * forecastDate.dt).getUTCMonth()) +1}/${new Date(1000 * forecastDate.dt).getUTCDate()}/${new Date(1000 * forecastDate.dt).getUTCFullYear()}</h4>
+                <div class="card-text"><img src="http://openweathermap.org/img/wn/${forecastDate.weather[0].icon}.png">
+                <p class="card-text">temp: ${forecastDate.main.temp} &degF</p>
+                <p class="card-text">Humidity: ${forecastDate.main.humidity} %</p>
+                </div>
+             </div>
+        </div>`
+        );
+       }
+      }
+    })
+  }
