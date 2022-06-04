@@ -4,31 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,400i,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
     <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Weather Dashboard</title>
 </head>
 
-<body class="flex-column min-100-vh">
-   <header class="hero">
-      <h1>Weather Dashboard</h1>
-   </header>
+<body>
+    <header class="hero">
+        <h1>Weather Dashboard</h1>
+     </header>
+     
+     <main class="flex-row justify-space-between">
+        <div class="card">
+            <h3 class="card-header">Search for a City:</h3>
+            <form id="city-form">
+               <input name="cityname" id="cityname" type="text" autofocus="true" class="form-input" />
+               <button type="search" class="btn">Search</button>
+            </form>
+     </main> 
+        <div class="w-100">
+            <ul class="list-group cityList mx-2 mt-3"></ul>
+        </div>
+         <div class="card-body">
+            <div class="content"></div>
+         </div>
+            <h3 id="h3">5-Day Forescast:</h3>
+            <div class="days">
+                <div class="item" id="item1"></div>
+                <div class="item" id="item2"></div>
+                <div class="item" id="item3"></div>
+                <div class="item" id="item4"></div>
+                <div class="item" id="item5"></div>
+            </div>
+        </div>
    
-   <main class="flex-row justify-space-between">
-      <div class="col-12 col-md-4"></div>
-      <div class="card">
-          <h3 class="card-header">Search for a City:</h3>
-          <form id="city-form" class="card-body">
-             <input name="cityname" id="cityname" type="text" autofocus="true" class="form-input" />
-             <button type="search" class="btn">Search</button>
-          </form>
-      </div>
 
 
-   </main> 
-
-
-
-  <script src="./assets/js/weather.js"></script>
+   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+   <script src="./assets/js/weather.js"></script>
 </body>
 </html>
