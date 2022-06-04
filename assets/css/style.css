@@ -93,14 +93,26 @@ body {
 }
 
 .w-100 {
-    width: 400px;
-    height: 300px;
-    position: absolute;
+    width: 21%;
     left: 10px;
-    top: 35%;
     border-top: 2px solid black;
+    position: absolute;
   } 
 
+.list-group {
+padding-left: 5px;
+}
+
+.list-group-item {
+    width: 100%;
+    background-color: var(--secondary);
+    font-size: 1.5rem;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius);
+}
 
 .item {
     margin: 1em;

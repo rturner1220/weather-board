@@ -110,3 +110,14 @@ function getForesCast(thisCity, id) {
       }
     })
   }
+
+// main function that clears divs and calls current and 5-day forecasts for city 
+function displayCityWeather() {
+    var thisCity = $(this).attr("data-city");
+
+    $(".cityToday").empty();
+    getCurrentWeather(thisCity, id);
+
+    $(".forescast").empty();
+    getForesCast(thisCity, id);
+}
