@@ -23,8 +23,10 @@ function init() {
     if (storedCities !== null) {
         cityList = storedCities;
     }
+    
 // calls main on page load function
     init();
+
 
     createCityList();
 
@@ -61,6 +63,8 @@ function getCurrentWeather(thisCity, id) {
     })
 }
 
+
+
 // called within getcurrentweather() to get uv index for selected city 
 function getUVI(id, cityLat, cityLong) {
     var uvURL = `https://api.openweathermap.org/data/2.5/uvi?lat=${cityLat}&lon=${cityLong}&appid=${id}`;
@@ -72,6 +76,7 @@ function getUVI(id, cityLat, cityLong) {
         $(".cityToday").append(`<p>UV Index: <span class="bagde bagde-danger p-2">${data.value}</span></p>`);
     })
 }
+
 
 
 // submit event that loads new data
@@ -121,3 +126,4 @@ function displayCityWeather() {
     $(".forescast").empty();
     getForesCast(thisCity, id);
 }
+
