@@ -11,43 +11,48 @@
 
 <body>
     <center>
-    <header class="text-center">
+    <header class="text-center text-white bg-primary p-2">
       <h1>Weather Dashboard</h1>
      </header>
     </center>
-
-     <main class="flex-row justify-space-between">
         <div class="card">
-            <h3 class="card-header">Search for a City:</h3>
+            <div class="col-lg-3 bg-light">
+            <h3 class="mt-1">Search for a City:</h3>
             <form id="city-form">
-               <input name="cityname" id="city" type="text" class="form-input" />
-               <button type="search" class="btn" id="search-button">Search</button>
-               <button type="clear" class="btn" id="clear-button">Clear</button>
+               <input id="city" type="text" class="form-control" placeholder="Enter city" aria-label="Enter City">
+               <div class="input-group-append mb-3">
+               <button type="search" class="btn bg-info text-white" id="search-button">Search</button>
+               <button type="clear" class="btn bg-info text-white" id="clear-button">Clear</button>
+               </div>
+            </div>
+        </div>
             </form>
-     </main> 
-        <div id="current-weather" class="card-body">
+    <div class="col-lg-9">
+        <div class="col-lg-11 card m-3 d-none"  id="current-weather">
             <div class="content">
-            <h3 id="city-name" class="city-name"></h3>
+            <h3 id="city-name" class="city-name align-middle"></h3>
             <img id="pic" alt="">
             <p id="temperature"></p>
             <p id="wind"></p>
             <p id="humidity"></p>
             <p id="UV-index"></p>
             </div>
-        </div>
-          <div class="row d-none" id="five-days">
+        
+       </div>
+       <div class="row d-none" id="five-days">
+           <div class="col-12">
            <h3>5-Day Forescast:</h3>
-             </div>
-            <div class = "row">
-              <div class="forescast text-white"></div>
-              <div class="forescast text-white"></div>
-              <div class="forescast text-white"></div>
-              <div class="forescast text-white"></div>
-              <div class="forescast text-white"></div>
-            </div>
+           </div>
+       </div>
+         <div class = "row">
+           <div class="col-md-2 forescast bg-secondary text-white m-2 rounded"></div>
+           <div class="col-md-2 forescast bg-secondary text-white m-2 rounded"></div>
+           <div class="col-md-2 forescast bg-secondary text-white m-2 rounded"></div>
+           <div class="col-md-2 forescast bg-secondary text-white m-2 rounded"></div>
+           <div class="col-md-2 forescast bg-secondary text-white m-2 rounded"></div>
+         </div>
         </div>
-   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-   <script src="./assets/js/weather.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="./assets/js/weather.js"></script>
 </body>
 </html>

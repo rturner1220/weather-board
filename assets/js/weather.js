@@ -4,54 +4,57 @@ var searchEl = document.getElementById("search-button");
 var clearEl = document.getElementById("clear-button");
 var nameEl = document.getElementById("city-name");
 var picEl = document.getElementById("pic");
+var currentWeatherEl = document.getElementById("current-weather");
 var currentTempEl = document.getElementById("temperature");
 var currentWindEL = document.getElementById("wind");
 var currentHumidityEl = document.getElementById("humidity");
 var currentUvEl = document.getElementById("UV-index");
-var historyEL = document.getElementById("city-form");
+var historyEl = document.getElementById("city-form");
 var fiveDays = document.getElementById("five-days");
 var searchHistory = JSON.parse(localStorage.getItem("search")) || [];
 
 // unique API
 var id = "cf6597689bdfad677e7e63bf7ab531e6";
 
-// stores cityList in localStorage
-function storeCities() {
-    localStorage.setItem("cities", JSON.stringify(cityList));
-}
-
 // adds last searched city to list-group as button for user to select city
-function createCityList() {
-    $(".cityList").empty();
-    cityList.forEach(function(city) {
-        $(".cityList").prepend($(`<button class="list-group-item list-group-item-action cityButton"
-        data-city="${city}">${city}</button>`));
-    })
+searchEl.addEventListener("click", function() {
+  var searchTerm = cityEl.value;
+  getCurrentWeather(searchTerm);
+  searchHistory.push(searchTerm);
+  localStorage.setItem("search", JSON.stringify(searchHistory));
+  renderSearchHistory();
+})
+
+// clear history button
+clearEl.addEventListener("click", function() {
+  localStorage.clear();
+  searchHistory = [];
+  renderSearchHistory();
+})
+
+// convert fahrenheit 
+function k2f(k) {
+    return Math.floor((k-273.15) * 1.8 + 32);
 }
 
-// loads citylist from local storage and calls api to get data for last searched city 
-function init() {
-    var storedCities = JSON.parse(localStorage.getItem("cities"));
-    if (storedCities !== null) {
-        cityList = storedCities;
+function renderSearchHistory() {
+    historyEl.innerHTML = "";
+    for (var i = 0; i < searchHistory.length; i++) {
+        var historyItem = document.createElement("input");
+        historyItem.setAttribute("type", "text");
+        historyItem.setAttribute("readonly", "true");
+        historyItem.setAttribute("class", "form-contol d-block bg-white");
+        historyItem.setAttribute("value", searchHistory[i]);
+        historyItem.addEventListener("click", function() {
+            getCurrentWeather(historyItem.value);
+        })
+        historyEl.append(historyItem);
     }
-    
-// calls main on page load function
-    init();
-
-
-    createCityList();
-
-    if (cityList) {
-        var thisCity = cityList[cityList.length - 1]
-        getCurrentWeather(thisCity, id);
-        getForesCast(thisCity, id);
-        }
-    }
+} 
 
 // get current weather for selected city
 function getCurrentWeather(cityName) {
-    var weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + id + "&units=imperial";
+    var weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + id;
     axios.get(weatherUrl).then(function(response) {
        currentWeatherEl.classList.remove("d-none");
        
@@ -71,7 +74,7 @@ function getCurrentWeather(cityName) {
        // Get UV Index 
        var lat = response.data.coord.lat;
        var lon = response.data.coord.lon;
-       var uvURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=" + id + "&cnt=1" + "&units=imperial";
+       var uvURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=" + id + "&cnt=1";
        axios.get(uvURL).then(function (response) {
            var UvIndex = document.createElement("span");
        
@@ -88,9 +91,14 @@ function getCurrentWeather(cityName) {
            currentUvEl.append(UvIndex);
         });
 
+  renderSearchHistory();
+    if (searchHistory.length > 0) {
+    getCurrentWeather(searchHistory[searchHistory.length - 1]);
+    }
+
        // get 5 days forescast for selected city
        var cityID = response.data.id;
-       var forecastURL = "`https://api.openweathermap.org/data/2.5/forecast?q=" + cityID + "&appid=" + id + "&units=imperial";
+       var forecastURL = "`https://api.openweathermap.org/data/2.5/forecast?q=" + cityID + "&appid=" + id;
        axios.get(forecastURL).then(function (response) {
            fiveDays.classList.remove("d-none");
        // display forecast for next 5 days
@@ -121,6 +129,6 @@ function getCurrentWeather(cityName) {
          }
       })
     });
-}
+  }
 }
 initPage();
