@@ -1,6 +1,18 @@
-// add functionality to pull current location weather
-// create button to clear the city array
-var cityList = [];
+function initPage() {
+var cityEl = document.getElementById("city");
+var searchEl = document.getElementById("search-button");
+var clearEl = document.getElementById("clear-button");
+var nameEl = document.getElementById("city-name");
+var picEl = document.getElementById("pic");
+var currentTempEl = document.getElementById("temperature");
+var currentWindEL = document.getElementById("wind");
+var currentHumidityEl = document.getElementById("humidity");
+var currentUvEl = document.getElementById("UV-index");
+var historyEL = document.getElementById("city-form");
+var fiveDays = document.getElementById("five-days");
+var searchHistory = JSON.parse(localStorage.getItem("search")) || [];
+
+// unique API
 var id = "cf6597689bdfad677e7e63bf7ab531e6";
 
 // stores cityList in localStorage
@@ -37,93 +49,78 @@ function init() {
         }
     }
 
-// gets current forecast for selected city
-function getCurrentWeather(thisCity, id) {
-    var weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${thisCity}&unit=imperial&appid=${id}`;
-    var cityLat;
-    var cityLong;
+// get current weather for selected city
+function getCurrentWeather(cityName) {
+    var weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + id + "&units=imperial";
+    axios.get(weatherUrl).then(function(response) {
+       currentWeatherEl.classList.remove("d-none");
+       
+       //display current weather
+       var currentDate = new Date(response.data.dt * 1000);
+       var day = currentDate.getDate();
+       var month = currentDate.getMonth() + 1;
+       var year = currentDate.getFullYear();
+       nameEl.innerHTML = response.data.name + " (" + month + "/" + day + "/" + year + ") ";
+       var weatherPic = response.data.weather[0].icon;
+       picEl.setAttribute("src", "http://openweathermap.org/img/wn/" + weatherPic + "@2x.png");
+       picEl.setAttribute("alt", response.data.weather[0].description);
+       currentTempEl.innerHTML = "Temperature: " + k2f(response.data.main.temp) + "&#176F";
+       currentWindEL.innerHTML = "Wind: " + response.data.wind.speed + "MPH";
+       currentHumidityEl.innerHTML = "Humidity: " + response.data.main.humidity + "%";
 
-    $.ajax({
-        url: weatherUrl,
-        method: "GET"
-    }).then(function(data) {
-        $(".cityToday").append (
-            `<div class="row ml-1">
-            <h3 class="mr-3">${data.name} (${(new Date(1000 * data.dt).getUTCMonth()) + 
-            1}/${(new Date(1000 * data.dt).getUTCDate()) - 1}/${new Date(1000 * data.dt).getUTCFullYear()})</h3>
-            <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}.png">
-            </div>`
-        )
-        $(".cityToday").append(`<p>Temperature: ${data.main.temp} &degF</p>`)
-        $(".cityToday").append(`<p>Humidity: ${data.main.humidity} %</p>`)
-        $(".cityToday").append(`<p>Wind: ${data.wind.speed} mph</p>`)
-        cityLat = data.coord.lat;
-        cityLong = data.coord.lon;
-        getUVI(id, cityLat, cityLong);
-    })
+       // Get UV Index 
+       var lat = response.data.coord.lat;
+       var lon = response.data.coord.lon;
+       var uvURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=" + id + "&cnt=1" + "&units=imperial";
+       axios.get(uvURL).then(function (response) {
+           var UvIndex = document.createElement("span");
+       
+           // When UV is good, shows green, ok shows yellow, bad shows red
+           if (response.data[0].value < 4) {
+               UvIndex.setAttribute("class", "badge badge-success");
+           }
+           else if (response.data[0].value < 8) {
+               UvIndex.setAttribute("class", "badge badge=danger");
+           }
+           console.log(response.data[0].value)
+           UvIndex.innerHTML = response.data[0].value;
+           currentUvEl.innerHTML = "UV Index: ";
+           currentUvEl.append(UvIndex);
+        });
+
+       // get 5 days forescast for selected city
+       var cityID = response.data.id;
+       var forecastURL = "`https://api.openweathermap.org/data/2.5/forecast?q=" + cityID + "&appid=" + id + "&units=imperial";
+       axios.get(forecastURL).then(function (response) {
+           fiveDays.classList.remove("d-none");
+       // display forecast for next 5 days
+       var forecastEl = document.querySelectorAll(".forescast"); 
+       for (i = 0; i < forecastEl.length; i++) {
+           forecastEl[i].innerHTML = "";
+           var forescastIndex = i * 8 + 4;
+           var forescastDate = new Date(response.data.list[forescastIndex].dt * 1000);
+           var forecastDay = forescastDate.getDate();
+           var forecastMonth = forescastDate.getMonth() + 1;
+           var forecastYear = forecastDate.getFullYear();
+           var forecastDateEl = document.createElement("p");
+           forecastDateEl.setAttribute("class", "mt-3 mb-0 forescast-date");
+           forecastDateEl.innerHTML = forecastMonth + "/" + forecastDay + "/" + forecastYear;
+           forecastEl[i].append(forecastDateEl);
+
+        // icon for current weather
+        var forecastWeatherEl = document.createElement("img");
+        forecastWeatherEl.setAttribute("src", "http://openweathermap.org/img/wn/" + response.data.list[forecastIndex].weather[0].icon + "@2x.png");
+        forecastWeatherEl.setAttribute("alt", response.data.list[forescastIndex].weather[0].description);
+        forecastEl[i].append(forecastWeatherEl);
+        var forecastTempEl = document.createElement("p");
+        forecastTempEl.innerHTML = "Temp:" + k2f(response.data.list[forescastIndex].main.temp) + "&#176F";
+        forecastEl[i].append(forecastTempEl);
+        var forecastHumidityEl = document.createElement("p");
+        forecastHumidityEl.innerHTML = "Humidity:" + response.data.list[forescastIndex].main.humidity + "%";
+        forecastEl[i].append(forecastHumidityEl);
+         }
+      })
+    });
 }
-
-
-
-// called within getcurrentweather() to get uv index for selected city 
-function getUVI(id, cityLat, cityLong) {
-    var uvURL = `https://api.openweathermap.org/data/2.5/uvi?lat=${cityLat}&lon=${cityLong}&appid=${id}`;
-
-    $.ajax({
-        url: uvURL,
-        method: "GET"
-    }).then(function (data) {
-        $(".cityToday").append(`<p>UV Index: <span class="bagde bagde-danger p-2">${data.value}</span></p>`);
-    })
 }
-
-
-
-// submit event that loads new data
-$("form").on("submit", function(event) {
-    event.preventDefault();
-    console.log()
-    var newCity = $("#cityname").val().trim();
-    cityList.push(newCity);
-    createCityList();
-    storeCities();
-    $("#searchButton").val("");
-})
-
-// get  day forescast for wlwcted city
-function getForesCast(thisCity, id) {
-    var foreCastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${thisCity}&units=imperial&appid=${id}`;
-
-    $.ajax({
-        url: foreCastURL,
-        method: "GET"
-    }).then(function(data) {
-        for (i = 0; i < data.list.length; i++) {
-            if (data.list[i].dt_txt.search("15:00:00") != -1) {
-                var forecastDate = data.list[i];
-                $(".forecast").append(`<div class="card bg-primary shadow m-4">
-                <div class="card-body">
-                <h4 class="card-title">${(new Date(1000 * forecastDate.dt).getUTCMonth()) +1}/${new Date(1000 * forecastDate.dt).getUTCDate()}/${new Date(1000 * forecastDate.dt).getUTCFullYear()}</h4>
-                <div class="card-text"><img src="http://openweathermap.org/img/wn/${forecastDate.weather[0].icon}.png">
-                <p class="card-text">temp: ${forecastDate.main.temp} &degF</p>
-                <p class="card-text">Humidity: ${forecastDate.main.humidity} %</p>
-                </div>
-             </div>
-        </div>`
-        );
-       }
-      }
-    })
-  }
-
-// main function that clears divs and calls current and 5-day forecasts for city 
-function displayCityWeather() {
-    var thisCity = $(this).attr("data-city");
-
-    $(".cityToday").empty();
-    getCurrentWeather(thisCity, id);
-
-    $(".forescast").empty();
-    getForesCast(thisCity, id);
-}
-
+initPage();

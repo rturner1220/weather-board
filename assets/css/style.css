@@ -75,7 +75,7 @@ body {
     box-shadow: 2px 2px var(--dark);
   }
 
-#h3 {
+#daysWeather {
     margin-left: 28%;
     margin-top: 15%;
     font-size: 30px;
@@ -92,7 +92,7 @@ body {
   
 }
 
-.w-100 {
+.city-group {
     width: 21%;
     left: 10px;
     border-top: 2px solid black;
