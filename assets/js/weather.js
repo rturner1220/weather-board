@@ -14,7 +14,7 @@ var fiveDays = document.getElementById("five-days");
 var searchHistory = JSON.parse(localStorage.getItem("search")) || [];
 
 // unique API
-var id = "cf6597689bdfad677e7e63bf7ab531e6";
+var id = "e8da5baf222252295e9ca51dd925adf8";
 
 // adds last searched city to list-group as button for user to select city
 searchEl.addEventListener("click", function() {
@@ -45,9 +45,10 @@ function renderSearchHistory() {
         historyItem.setAttribute("readonly", "true");
         historyItem.setAttribute("class", "form-contol d-block bg-white");
         historyItem.setAttribute("value", searchHistory[i]);
-        historyItem.addEventListener("click", function() {
-            getCurrentWeather(historyItem.value);
-        })
+        historyItem.addEventListener("click",  function() {
+          getCurrentWeather(historyItem.value);  
+        });
+               
         historyEl.append(historyItem);
     }
 } 
@@ -55,7 +56,8 @@ function renderSearchHistory() {
 // get current weather for selected city
 function getCurrentWeather(cityName) {
     var weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + id;
-    axios.get(weatherUrl).then(function(response) {
+    axios.get(weatherUrl)
+    .then(function(response) {
        currentWeatherEl.classList.remove("d-none");
        
        //display current weather
@@ -75,7 +77,8 @@ function getCurrentWeather(cityName) {
        var lat = response.data.coord.lat;
        var lon = response.data.coord.lon;
        var uvURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=" + id + "&cnt=1";
-       axios.get(uvURL).then(function (response) {
+       axios.get(uvURL)
+       .then(function (response) {
            var UvIndex = document.createElement("span");
        
            // When UV is good, shows green, ok shows yellow, bad shows red
