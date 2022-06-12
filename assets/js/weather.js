@@ -76,13 +76,13 @@ function initPage() {
            currentHumidityEl.innerHTML = "Humidity: " + response.data.main.humidity + "%";
 
            // Get UV Index
-           var lat = response.data.coord.lat;
-           var lon = response.data.coord.lon;
-           var uvURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=" + id + "&cnt=1";
+           let lat = response.data.coord.lat;
+           let lon = response.data.coord.lon;
+           let uvURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=" + id + "&cnt=1";
            axios.get(uvURL)
                 .then(function(response) {
                   let uvi = response.data.current.uvi;
-                  var UVIndex = document.createElement("span");
+                  let UVIndex = document.createElement("span");
               
                   // When UV is good, shows green, ok shows yellow, bad shows red
                   if (uvi < 2) {
