@@ -17,7 +17,6 @@ Built with
 ** CSS 
 ** Bootstrap.min.css
 ** Javascript 
-** Axios.min.js
 
 Deployed Application
 
